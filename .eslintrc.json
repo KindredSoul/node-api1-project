@@ -1,20 +1,12 @@
 {
     "env": {
-<<<<<<< HEAD
-=======
         "commonjs": true,
->>>>>>> bf81508af47f585aedf8c9a46fcec67fb16a3284
         "es2021": true,
         "node": true
     },
     "extends": "eslint:recommended",
     "parserOptions": {
-<<<<<<< HEAD
-        "ecmaVersion": 12,
-        "sourceType": "module"
-=======
         "ecmaVersion": 12
->>>>>>> bf81508af47f585aedf8c9a46fcec67fb16a3284
     },
     "rules": {
     }
