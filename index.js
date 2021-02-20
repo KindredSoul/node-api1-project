@@ -27,32 +27,46 @@ app.get("/wrestlers", (req, res)=>{
 app.get("/wrestlers/:id", (req, res)=>{
     const idVar = req.params.id
     const w = wrestlers.find(wrestler => wrestler.id === idVar)
-    !w 
+    try{
+        !w 
     ? res.status(404).json({message:`ID: ${idVar} does not exist.`}) 
     : res.status(200).json(w)
+    }
+    catch(error){
+        res.status(500).json({message:`The user information could not be retrieved. Server error: ${error}`})
+    }
 })
 
 
 // POST request
 app.post("/wrestlers", (req,res)=>{
     const {name, bio} = req.body
-    if(!name || !bio){
-        res.status(400).json({message:`Please provide name AND bio for the user`})
-    }else{
-        const newW = {id: generate(), name, bio}
-        console.log(newW)
-        wrestlers.push(newW)
-        res.status(201).json(newW)
+    try{
+        if(!name || !bio){
+            res.status(400).json({message:`Please provide name AND bio for the user`})
+        }else{
+            const newW = {id: generate(), name, bio}
+            console.log(newW)
+            wrestlers.push(newW)
+            res.status(201).json(newW)
+        }
+    }
+    catch(error){
+        res.status(500).json({message:`There was an error while saving the user to the database. Server error: ${error}`})
     }
 })
 
+// PUT request
 app.put("/wrestlers/:id", (req,res)=>{
     const id = req.params.id
     const {name, bio} = req.body
     const indexOfW = wrestlers.findIndex(w => w.id === id)
 
     try{
-        if(indexOfW != -1){
+        if(!name || !bio){
+            res.status(400).json({message:`Please provide name and bio for the user.`})
+        }
+        else if(indexOfW != -1){
             wrestlers[indexOfW] = {id, name, bio}
             res.status(200).json({id, name, bio})
         }
@@ -65,6 +79,7 @@ app.put("/wrestlers/:id", (req,res)=>{
     }
 })
 
+// DELETE
 app.delete("wrestlers/:id", (req, res)=>{
     const idVar = req.params.id
     try{
@@ -76,8 +91,12 @@ app.delete("wrestlers/:id", (req, res)=>{
             res.status(200).json({message:`Wrestler ${idVar} successfully removed`})
         }
     }catch(error){
-        res.status(500).json({message:`Server error: ${error}`})
+        res.status(500).json({message:`The user could not be removed. Server error: ${error}`})
     }
+})
+
+app.use("*",(req,res)=>{
+    res.status(404).json({message:"404 Not found )*:"})
 })
 
 app.listen(PORT, ()=>{
